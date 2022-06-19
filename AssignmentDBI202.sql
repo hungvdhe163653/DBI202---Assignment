@@ -64,12 +64,13 @@ VALUES ('SU22', 'Summer 2022', '5/5/2022', '9/9/2022')
 INSERT INTO Groups(GroupID, StudentID, SemesterID)
 VALUES ('SE1647', 'HE163653', 'SP22')
 
-select * from Student
+SELECT * FROM Student
 
-select * from Semester
+SELECT * FROM Semester
 
-select * from Subject
+SELECT * FROM Subject
 
+SELECT * FROM Attenden
 
-select * from Attenden
-select * from Groups
+SELECT * FROM Groups
+
