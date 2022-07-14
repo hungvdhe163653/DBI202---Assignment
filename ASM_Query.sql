@@ -23,7 +23,7 @@ FROM StAssessment sa LEFT JOIN Assessment a ON a.AssID = sa.AssID
 GROUP BY su.SubjectName, s.StudentName) tb1
 GROUP BY tb1.StudentName
 --Q5
-SELECT tb1.StudentName, AVG([AVG]) AS GPA FROM
+SELECT tb1.StudentName, AVG([AVG]) AS GPA FROM 
 (SELECT s.StudentName AS StudentName, su.SubjectName AS SubjectName ,
 SUM(sa.Score * a.AssWeight) AS [AVG]
 FROM StAssessment sa LEFT JOIN Assessment a ON a.AssID = sa.AssID
@@ -31,5 +31,6 @@ FROM StAssessment sa LEFT JOIN Assessment a ON a.AssID = sa.AssID
 					 LEFT JOIN Student s ON sa.StudentID = s.StudentID
 GROUP BY su.SubjectName, s.StudentName) tb1
 GROUP BY tb1.StudentName
+
 
 
