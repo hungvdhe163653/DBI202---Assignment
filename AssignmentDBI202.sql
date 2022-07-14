@@ -1,5 +1,4 @@
 
-
 CREATE DATABASE ASSIGNMENT
 
 CREATE TABLE Student (
@@ -764,4 +763,16 @@ SELECT * FROM Semester
 SELECT * FROM Groups
 
 SELECT * FROM StAssessment
+
+CREATE TABLE Lecture(
+	[lectureID] [varchar] (10) NOT NULL PRIMARY KEY,
+	[lectureName] [nvarchar] (50) NOT NULL,
+	[lectureGender] [char] (1) NOT NULL,
+	[Address] [nvarchar] (50) NOT NULL,
+)
+
+ALTER TABLE Groups
+ADD [lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID);
+
+SELECT * FROM Lecture
 
