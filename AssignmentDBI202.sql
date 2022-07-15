@@ -774,5 +774,12 @@ CREATE TABLE Lecture(
 ALTER TABLE Groups
 ADD [lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID);
 
-SELECT * FROM Lecture
+ALTER TABLE Semester
+ADD [lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID);
+
+ALTER TABLE Lecture
+ADD [lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID);
+
+ALTER TABLE Lecture
+ADD [SemesterID] [nvarchar] (50) FOREIGN KEY REFERENCES Semester(SemesterID)
 
