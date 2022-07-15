@@ -1,6 +1,6 @@
 --Q1
-SELECT s.SubjectID, s.SubjectName FROM Subject s
-ORDER BY s.SubjectName
+SELECT s.StudentName, s.StudentID, s.StudentGender, s.Address FROM Student s
+ORDER BY s.StudentID
 
 --Q2
 SELECT s.StudentID, s.StudentName, g.GroupID, g.SemesterID
@@ -44,6 +44,7 @@ INNER JOIN Semester s ON g.SemesterID = s.SemesterID)
 ORDER BY SemesterID
 
 --Q8
+
 
 
 
