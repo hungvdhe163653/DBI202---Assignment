@@ -44,7 +44,15 @@ INNER JOIN Semester s ON g.SemesterID = s.SemesterID)
 ORDER BY SemesterID
 
 --Q8
-
+SELECT DISTINCT s.StudentName, s.StudentID,
+    CASE
+        WHEN AVG(Score) <= 5 THEN 'Poor'
+        WHEN AVG(Score) > 7 AND AVG(Score) <= 9 THEN 'WelDone'
+        ELSE 'Excellent'
+    END as[Ranking]
+FROM StAssessment St
+JOIN Student s On s.StudentID = St.StudentID
+GROUP BY s.StudentID, s.StudentName
 
 
 
