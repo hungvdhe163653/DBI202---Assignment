@@ -35,12 +35,23 @@ CREATE TABLE Groups (
 	[SemesterID] [nvarchar] (50) FOREIGN KEY REFERENCES Semester(SemesterID),
 	[StudentID] [varchar] (10) NOT NULL FOREIGN KEY REFERENCES Student(StudentID),
 	[GroupID] [varchar] (10) NOT NULL,
+	[lectureID] [varchar] (10) NOT NULL FOREIGN KEY REFERENCES Lecture(lectureID),
 )
 CREATE TABLE Semester(
 	[SemesterID] [nvarchar] (50) NOT NULL PRIMARY KEY,
 	[startDate] [date] NOT NULL,
 	[endDate] [date] NOT NULL,
+	[lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID),
 )
+
+CREATE TABLE Lecture(
+	[lectureID] [varchar] (10) NOT NULL PRIMARY KEY,
+	[lectureName] [nvarchar] (50) NOT NULL,
+	[lectureGender] [char] (1) NOT NULL,
+	[Address] [nvarchar] (50) NOT NULL,
+	[SemesterID] [nvarchar] (50) FOREIGN KEY REFERENCES Semester(SemesterID),
+)
+
 
 INSERT INTO Student(StudentID,StudentName,StudentGender,Address)
 VALUES ('HE1610', 'Nguyen Van A', 'M', 'TQ')
@@ -764,20 +775,11 @@ SELECT * FROM Groups
 
 SELECT * FROM StAssessment
 
-CREATE TABLE Lecture(
-	[lectureID] [varchar] (10) NOT NULL PRIMARY KEY,
-	[lectureName] [nvarchar] (50) NOT NULL,
-	[lectureGender] [char] (1) NOT NULL,
-	[Address] [nvarchar] (50) NOT NULL,
-)
 
 ALTER TABLE Groups
 ADD [lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID);
 
 ALTER TABLE Semester
-ADD [lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID);
-
-ALTER TABLE Lecture
 ADD [lectureID] [varchar] (10) FOREIGN KEY REFERENCES Lecture(lectureID);
 
 ALTER TABLE Lecture
