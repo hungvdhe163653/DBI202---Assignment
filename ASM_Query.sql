@@ -102,22 +102,40 @@ AS
 	DECLARE @StudentID [varchar] (10);
 	SELECT @Score1 = Score from inserted;
 	SELECT @Score = StAssessment.Score;
-
 	
 	BEGIN
 		PRINT 'Grade EXISTED'
 		ROLLBACK TRAN;
 	END
 
+--STORED PROCEDURE
+GO
+CREATE PROCEDURE uspFindScore
+(
+	@min_score AS DECIMAL = 0,
+	@max_score AS DECIMAL = NULL,
+	@name AS VARCHAR(max)
+)
+AS
+BEGIN
+	SELECT 
+		s.StudentID, s.StudentName, st.AssID, st.Score, st.Date
+	FROM
+		Student s, StAssessment st
+	WHERE 
+		Score >= @min_score AND
+		(@max_score IS NULL OR Score <= @max_score) AND
+		s.StudentName LIKE @name + '%'
+	ORDER BY 
+		s.StudentID
+END;
 
+EXEC uspFindScore
+	@name = 'N';
 
-
-
-
-
-	
-	
-
+--INDEX	
+CREATE INDEX index_id
+ON Student (StudentID)
 
 
 
