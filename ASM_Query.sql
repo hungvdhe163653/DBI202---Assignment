@@ -17,19 +17,21 @@ FROM StAssessment sa LEFT JOIN Assessment a ON a.AssID = sa.AssID
 GROUP BY su.SubjectName, s.StudentName, s.StudentID
 
 --Q4
-SELECT tb1.StudentName, AVG([AVG]) AS GPA FROM 
-(SELECT s.StudentName AS StudentName, su.SubjectName AS SubjectName ,
+SELECT tb1.StudentName, tb1.StudentID, AVG([AVG]) AS GPA FROM 
+(SELECT s.StudentName AS StudentName, s.StudentID AS StudentID, su.SubjectName AS SubjectName ,
 SUM(sa.Score * a.AssWeight) AS [AVG]
 FROM StAssessment sa LEFT JOIN Assessment a ON a.AssID = sa.AssID
 					 LEFT JOIN Subject su ON su.SubjectID = a.SubjectID 
 					 LEFT JOIN Student s ON sa.StudentID = s.StudentID
-GROUP BY su.SubjectName, s.StudentName) tb1
-GROUP BY tb1.StudentName
+GROUP BY su.SubjectName, s.StudentName, s.StudentID) tb1
+GROUP BY tb1.StudentName, tb1.StudentID
 
 --Q5
-SELECT s.StudentName, s.StudentID, sts.Score, sts.AssID, sts.Date FROM Student s
-INNER JOIN StAssessment sts ON sts.StudentID = s.StudentID
-WHERE Sts.Score = 10
+SELECT a.StudentName AS StudentName1, b.StudentName AS StudentName2, a.Address
+FROM Student a, Student b
+WHERE a.StudentID <> b.StudentID
+AND a.Address = b.Address
+ORDER BY a.Address;
 
 --Q6
 SELECT s.StudentName, s.StudentID, sts.Score, sts.AssID, sts.Date FROM Student s
@@ -47,17 +49,17 @@ GROUP BY Sts.StudentID, Sts.Score HAVING COUNT(Sts.Score) = 5
 ORDER BY Sts.StudentID
 
 --Q8
-SELECT DISTINCT g.GroupID, l.lectureID, s.SemesterID, s.startDate, s.endDate
+SELECT  g.GroupID, l.lectureID, s.SemesterID, s.startDate, s.endDate
 FROM ((Groups g
 INNER JOIN Lecture l ON l.lectureID   = g.lectureID)
 INNER JOIN Semester s ON g.SemesterID = s.SemesterID)
 ORDER BY SemesterID
 
 --Q9
-SELECT DISTINCT s.StudentName, s.StudentID, 
+SELECT  s.StudentName, s.StudentID, 
     CASE
         WHEN AVG(Score) <= 5 THEN 'Poor'
-        WHEN AVG(Score) > 7 AND AVG(Score) <= 9 THEN 'WelDone'
+        WHEN AVG(Score) >= 7 AND AVG(Score) < 9 THEN 'WelDone'
         ELSE 'Excellent'
     END AS [Ranking]
 FROM StAssessment St 
@@ -94,26 +96,29 @@ ORDER BY tb1.StudentID
 
 --TRIGGER
 GO
-CREATE TRIGGER Trigger_St ON StAssessment
-AFTER INSERT, UPDATE, DELETE
-AS 
-	DECLARE @Score INT;
-	DECLARE @Score1 INT;
-	DECLARE @StudentID [varchar] (10);
-	SELECT @Score1 = Score from inserted;
-	SELECT @Score = StAssessment.Score;
-	
+CREATE TRIGGER trigger_asm ON Groups
+AFTER INSERT,UPDATE,DELETE
+AS
+	DECLARE @GID nvarchar(10);
+	DECLARE @COUNT nvarchar(10);
+	SELECT @GID = GroupID  FROM inserted;
+	SELECT @COUNT = COUNT(*) FROM Groups WHERE GroupID = @GID;
+	IF @COUNT > 2
 	BEGIN
-		PRINT 'Grade EXISTED'
-		ROLLBACK TRAN;
+		PRINT 'Existed';
+		ROLLBACK TRAN
 	END
+
+INSERT INTO Groups VALUES ('Spring 2022', 'HE1610', 'SE1647', 'AnhTH')
+
+INSERT INTO Groups VALUES ('Spring 2022', 'HE1610', 'SE1648', 'AnhTH')
 
 --STORED PROCEDURE
 GO
 CREATE PROCEDURE uspFindScore
 (
-	@min_score AS DECIMAL = 0,
-	@max_score AS DECIMAL = NULL,
+	@min_score AS DECIMAL = 9,
+	@max_score AS DECIMAL = 10,
 	@name AS VARCHAR(max)
 )
 AS
@@ -123,8 +128,8 @@ BEGIN
 	FROM
 		Student s, StAssessment st
 	WHERE 
-		Score >= @min_score AND
-		(@max_score IS NULL OR Score <= @max_score) AND
+		Score > @min_score AND
+		Score < @max_score AND
 		s.StudentName LIKE @name + '%'
 	ORDER BY 
 		s.StudentID
